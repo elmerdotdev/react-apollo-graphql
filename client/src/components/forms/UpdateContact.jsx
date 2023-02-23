@@ -1,20 +1,58 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Input } from 'antd'
+import { useMutation } from '@apollo/client'
+import { UPDATE_CONTACT } from '../../queries'
 
 const UpdateContact = props => {
+  const [id] = useState(props.id)
+  const [firstName, setFirstName] = useState(props.firstName)
+  const [lastName, setLastName] = useState(props.lastName)
   const [form] = Form.useForm()
   const [, forceUpdate] = useState()
+
+  const [updateContact] = useMutation(UPDATE_CONTACT)
 
   useEffect(() => {
     forceUpdate()
   }, [])
+
+  const onFinish = values => {
+    const { firstName, lastName } = values
+    updateContact({
+      variables: {
+        id,
+        firstName,
+        lastName
+      }
+    })
+    props.onButtonClick()
+  }
+
+  const updateStateVariable = (variable, value) => {
+    props.updateStateVariable(variable, value)
+    switch (variable) {
+      case 'firstName':
+        setFirstName(value)
+        break
+      case 'lastName':
+        setLastName(value)
+        break
+      default:
+        break
+    }
+  }
 
   return (
     <Form
     form={form}
     name='update-contact-form'
     layout='inline'
+    onFinish={onFinish}
     size='large'
+    initialValues={{
+      firstName: firstName,
+      lastName: lastName
+    }}
     >
       <Form.Item
       name='firstName'
@@ -25,6 +63,7 @@ const UpdateContact = props => {
       >
         <Input
         placeholder='i.e. John'
+        onChange={e => updateStateVariable('firstName', e.target.value)}
         />
       </Form.Item>
 
@@ -37,6 +76,7 @@ const UpdateContact = props => {
       >
         <Input
         placeholder='i.e. Smith'
+        onChange={e => updateStateVariable('lastName', e.target.value)}
         />
       </Form.Item>
 

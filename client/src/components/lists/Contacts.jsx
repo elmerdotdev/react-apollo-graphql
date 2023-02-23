@@ -26,7 +26,7 @@ const Contacts = () => {
     >
       {data.contacts.map(({ id, firstName, lastName }) => (
       <List.Item key={id}>
-        <ContactCard key={id} firstName={firstName} lastName={lastName} />
+        <ContactCard key={id} id={id} firstName={firstName} lastName={lastName} />
       </List.Item>
       ))}
     </List>
